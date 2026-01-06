@@ -24,8 +24,8 @@ module "vpc" {
 
   tags = {
     "kubernetes.io/cluster/tc-fiap-${var.environment}" = "shared"
-    Environment = var.environment
-    Name        = "tc-fiap-vpc-${var.environment}"
+    Environment                                        = var.environment
+    Name                                               = "tc-fiap-vpc-${var.environment}"
   }
 }
 
