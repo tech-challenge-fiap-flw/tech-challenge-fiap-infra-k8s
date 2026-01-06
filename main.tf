@@ -30,7 +30,6 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-
   eks_managed_node_groups = {
     default = {
       min_size     = 1
@@ -42,7 +41,18 @@ module "eks" {
     }
   }
 
+  enable_cluster_cloudwatch_log_group = false
+
   tags = {
     Environment = "tech-challenge"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "eks_cluster" {
+  name              = "/aws/eks/tech-challenge-cluster/cluster"
+  retention_in_days = 7
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
