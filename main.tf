@@ -11,7 +11,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.0.0"
 
-  name = "tech-challenge-vpc-${var.environment}"
+  name = "tc-fiap-vpc-${var.environment}"
   cidr = "10.0.0.0/16"
 
   azs             = ["us-east-1a", "us-east-1b"]
@@ -23,9 +23,9 @@ module "vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    "kubernetes.io/cluster/tech-challenge-cluster-${var.environment}" = "shared"
-    Environment                                                       = var.environment
-    Name                                                              = "tech-challenge-vpc-${var.environment}"
+    "kubernetes.io/cluster/tc-fiap-${var.environment}" = "shared"
+    Environment = var.environment
+    Name        = "tc-fiap-vpc-${var.environment}"
   }
 }
 
@@ -33,7 +33,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.0"
 
-  cluster_name    = "tech-challenge-cluster-${var.environment}"
+  cluster_name    = "tc-fiap-${var.environment}"
   cluster_version = "1.30"
 
   cluster_endpoint_public_access = true
@@ -57,6 +57,6 @@ module "eks" {
 
   tags = {
     Environment = var.environment
-    Name        = "tech-challenge-cluster-${var.environment}"
+    Name        = "tc-fiap-${var.environment}"
   }
 }
