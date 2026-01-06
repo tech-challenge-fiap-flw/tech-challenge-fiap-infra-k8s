@@ -40,7 +40,7 @@ jobs:
       run: terraform validate
 
     - name: Terraform Plan
-      run: terraform plan -no-color
+      run: terraform plan -no-color -var="environment=${{ env.ENVIRONMENT || 'staging' }}"
 
     - name: Terraform Plan Status
       if: steps.plan.outcome == 'failure'
@@ -48,10 +48,10 @@ jobs:
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
-      run: terraform apply -auto-approve
+      run: terraform apply -auto-approve -var="environment=${{ env.ENVIRONMENT || 'staging' }}"
 
     - name: Terraform Apply Staging
       if: github.ref == 'refs/heads/staging'
       run: |
         terraform workspace select staging || terraform workspace new staging
-        terraform apply -auto-approve
+        terraform apply -auto-approve -var="environment=staging"
