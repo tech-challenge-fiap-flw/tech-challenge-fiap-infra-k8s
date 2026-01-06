@@ -24,8 +24,8 @@ module "vpc" {
 
   tags = {
     "kubernetes.io/cluster/tech-challenge-cluster-${var.environment}" = "shared"
-    Environment = var.environment
-    Name        = "tech-challenge-vpc-${var.environment}"
+    Environment                                                       = var.environment
+    Name                                                              = "tech-challenge-vpc-${var.environment}"
   }
 }
 
