@@ -49,13 +49,6 @@ module "vpc" {
 }
 
 module "eks" {
-  aws_auth_roles = [
-    {
-      rolearn  = aws_iam_role.eks_admin.arn
-      username = "admin"
-      groups   = ["system:masters"]
-    }
-  ]
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.0"
 
@@ -68,6 +61,24 @@ module "eks" {
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+
+  manage_aws_auth_configmap = true
+
+  aws_auth_roles = [
+    {
+      rolearn  = aws_iam_role.eks_admin.arn
+      username = "admin-role"
+      groups   = ["system:masters"]
+    }
+  ]
+
+  aws_auth_users = [
+    {
+      userarn  = "arn:aws:iam::790144488941:user/fiap-tech-challenger"
+      username = "fiap-tech-challenger"
+      groups   = ["system:masters"]
+    }
+  ]
 
   eks_managed_node_groups = {
     default = {
