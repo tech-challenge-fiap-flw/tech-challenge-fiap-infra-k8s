@@ -49,7 +49,6 @@ module "vpc" {
 }
 
 module "eks" {
-  manage_aws_auth = true
   aws_auth_roles = [
     {
       rolearn  = aws_iam_role.eks_admin.arn
