@@ -49,7 +49,7 @@ module "vpc" {
 }
 
 module "eks" {
-  map_roles = [
+  aws_auth_roles = [
     {
       rolearn  = aws_iam_role.eks_admin.arn
       username = "admin"
