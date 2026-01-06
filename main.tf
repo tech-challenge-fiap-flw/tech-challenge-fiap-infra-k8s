@@ -41,7 +41,6 @@ module "eks" {
     }
   }
 
-  enable_cluster_cloudwatch_log_group = false
 
   tags = {
     Environment = "tech-challenge"
