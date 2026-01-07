@@ -33,28 +33,25 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
-    - name: Temp
-      run: terraform apply -destroy -target=aws_kms_alias.delete_temp
+    - name: Terraform Format
+      run: terraform fmt -check
 
-    # - name: Terraform Format
-    #   run: terraform fmt -check
+    - name: Terraform Validate
+      run: terraform validate
 
-    # - name: Terraform Validate
-    #   run: terraform validate
+    - name: Terraform Plan
+      run: terraform plan -no-color -var="environment=${{ env.ENVIRONMENT || 'staging' }}"
 
-    # - name: Terraform Plan
-    #   run: terraform plan -no-color -var="environment=${{ env.ENVIRONMENT || 'staging' }}"
+    - name: Terraform Plan Status
+      if: steps.plan.outcome == 'failure'
+      run: exit 1
 
-    # - name: Terraform Plan Status
-    #   if: steps.plan.outcome == 'failure'
-    #   run: exit 1
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main'
+      run: terraform apply -auto-approve -var="environment=${{ env.ENVIRONMENT || 'staging' }}"
 
-    # - name: Terraform Apply
-    #   if: github.ref == 'refs/heads/main'
-    #   run: terraform apply -auto-approve -var="environment=${{ env.ENVIRONMENT || 'staging' }}"
-
-    # - name: Terraform Apply Staging
-    #   if: github.ref == 'refs/heads/staging'
-    #   run: |
-    #     terraform workspace select staging || terraform workspace new staging
-    #     terraform apply -auto-approve -var="environment=staging"
+    - name: Terraform Apply Staging
+      if: github.ref == 'refs/heads/staging'
+      run: |
+        terraform workspace select staging || terraform workspace new staging
+        terraform apply -auto-approve -var="environment=staging"
