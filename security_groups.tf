@@ -6,10 +6,10 @@ resource "aws_security_group" "eks_cluster_sg" {
 
   # Ingress rules
   ingress {
-    description = "Node groups to cluster API"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    description     = "Node groups to cluster API"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     security_groups = [aws_security_group.eks_cluster_sg.id]
   }
 
