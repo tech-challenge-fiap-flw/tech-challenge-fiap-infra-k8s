@@ -100,10 +100,17 @@ module "eks" {
   }
 }
 
-# Adding Elastic IP association to the EKS managed node group instances
+# Fetch Auto Scaling Group for the EKS managed node group
+resource "aws_autoscaling_group" "eks_node_group_asg" {
+  for_each = toset(module.eks.eks_managed_node_groups["default"].resources.autoscaling_groups)
+
+  name = each.value
+}
+
+# Associate Elastic IPs to instances in the Auto Scaling Group
 resource "aws_eip" "eks_node_group" {
-  count    = length(module.eks.eks_managed_node_groups["default"].instances)
-  instance = module.eks.eks_managed_node_groups["default"].instances[count.index].id
+  count    = length(aws_autoscaling_group.eks_node_group_asg[*].instances)
+  instance = aws_autoscaling_group.eks_node_group_asg[*].instances[count.index].id
   vpc      = true
 }
 
