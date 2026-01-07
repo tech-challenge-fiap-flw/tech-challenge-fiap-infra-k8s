@@ -10,7 +10,7 @@ resource "aws_security_group" "eks_cluster_sg" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    # security_groups = [aws_security_group.node_group_sg.id]
+    security_groups = [aws_security_group.node_group_sg.id]
   }
 
   ingress {
@@ -47,6 +47,31 @@ resource "aws_security_group" "eks_cluster_sg" {
 
   tags = {
     Name        = "tc-fiap-${var.environment}-cluster"
+    Environment = var.environment
+  }
+}
+
+resource "aws_security_group" "node_group_sg" {
+  name        = "node-group-sg-${var.environment}"
+  description = "Security group for EKS node group"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "node-group-sg-${var.environment}"
     Environment = var.environment
   }
 }
