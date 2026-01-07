@@ -1,16 +1,3 @@
-# --- Variáveis (Caso não tenha um variables.tf separado) ---
-variable "environment" {
-  description = "Ambiente (dev, prod, etc)"
-  type        = string
-  default     = "dev"
-}
-
-variable "region" {
-  description = "Região AWS"
-  type        = string
-  default     = "us-east-1"
-}
-
 # --- Provider e Backend ---
 terraform {
   required_version = ">= 1.3.0"

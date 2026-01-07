@@ -3,3 +3,9 @@ variable "environment" {
   type        = string
   default     = "staging"
 }
+
+variable "region" {
+  description = "Região AWS"
+  type        = string
+  default     = "us-east-1"
+}
