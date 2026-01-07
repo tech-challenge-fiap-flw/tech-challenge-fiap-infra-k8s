@@ -100,27 +100,60 @@ module "eks" {
   }
 }
 
-# Fetch Auto Scaling Group for the EKS managed node group
-resource "aws_autoscaling_group" "eks_node_group_asg" {
+# Add Load Balancer for EKS managed node group
+resource "aws_lb" "eks_lb" {
+  name               = "eks-load-balancer"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.eks_cluster_sg.id]
+  subnets            = module.vpc.public_subnets
+
+  enable_deletion_protection = false
+
+  tags = {
+    Name        = "eks-load-balancer"
+    Environment = var.environment
+  }
+}
+
+resource "aws_lb_listener" "eks_lb_listener" {
+  load_balancer_arn = aws_lb.eks_lb.arn
+  port              = 3000
+  protocol          = "HTTP"
+
+  default_action {
+    type = "forward"
+
+    target_group_arn = aws_lb_target_group.eks_lb_target_group.arn
+  }
+}
+
+resource "aws_lb_target_group" "eks_lb_target_group" {
+  name        = "eks-target-group"
+  port        = 3000
+  protocol    = "HTTP"
+  vpc_id      = module.vpc.vpc_id
+  target_type = "instance"
+
+  health_check {
+    path                = "/health"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    protocol            = "HTTP"
+  }
+
+  tags = {
+    Name        = "eks-target-group"
+    Environment = var.environment
+  }
+}
+
+resource "aws_lb_target_group_attachment" "eks_lb_target_group_attachment" {
   for_each = toset(module.eks.eks_managed_node_groups["default"].resources.autoscaling_groups)
 
-  name = each.value
-}
-
-# Associate Elastic IPs to instances in the Auto Scaling Group
-resource "aws_eip" "eks_node_group" {
-  count    = length(aws_autoscaling_group.eks_node_group_asg[*].instances)
-  instance = aws_autoscaling_group.eks_node_group_asg[*].instances[count.index].id
-  vpc      = true
-}
-
-# Adding a security group rule to allow inbound traffic on port 3000
-resource "aws_security_group_rule" "allow_http_3000" {
-  type        = "ingress"
-  from_port   = 3000
-  to_port     = 3000
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-
-  security_group_id = aws_security_group.eks_cluster_sg.id
+  target_group_arn = aws_lb_target_group.eks_lb_target_group.arn
+  target_id        = each.value
+  port             = 3000
 }
