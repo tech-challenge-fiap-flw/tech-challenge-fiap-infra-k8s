@@ -93,6 +93,7 @@ module "eks" {
     }
   }
 
+  cluster_security_group_id = aws_security_group.eks_cluster_sg.id
 
   tags = {
     Environment = var.environment
