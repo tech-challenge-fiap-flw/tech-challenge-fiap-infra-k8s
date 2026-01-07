@@ -100,54 +100,28 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.0" # Atualizado para uma versão mais recente
 
-  cluster_name    = "tc-fiap-${var.environment}"
-  cluster_version = "1.30"
-
-  cluster_endpoint_public_access = true
-
-  cluster_enabled_log_types = []
+  eks_cluster_id     = "tc-fiap-${var.environment}" # Substitui cluster_name
+  kubernetes_version = "1.30"                       # Substitui cluster_version
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  manage_aws_auth_configmap = true
+  enable_irsa = true # Substitui manage_aws_auth_configmap
 
-  aws_auth_roles = [
-    {
-      rolearn  = aws_iam_role.eks_admin.arn
-      username = "admin-role"
-      groups   = ["system:masters"]
-    }
-  ]
-
-  aws_auth_users = [
-    {
-      userarn  = "arn:aws:iam::790144488941:user/fiap-tech-challenger"
-      username = "fiap-tech-challenger"
-      groups   = ["system:masters"]
-    }
-  ]
-
-  # Regras adicionais de SG para os Nodes aceitarem tráfego do ALB
-  node_security_group_additional_rules = {
-    ingress_allow_alb = {
-      description              = "Permitir trafego do ALB na porta 3000"
-      protocol                 = "tcp"
-      from_port                = 3000
-      to_port                  = 3000
-      type                     = "ingress"
-      source_security_group_id = aws_security_group.alb_sg.id
-    }
+  node_groups_defaults = {
+    ami_type       = "AL2_x86_64"
+    instance_types = ["t3.medium"]
+    desired_size   = 1
+    min_size       = 1
+    max_size       = 2
+    capacity_type  = "ON_DEMAND"
   }
 
-  eks_managed_node_groups = {
+  node_groups = {
     default = {
+      desired_size = 1
       min_size     = 1
       max_size     = 2
-      desired_size = 1
-
-      instance_types = ["t3.medium"]
-      capacity_type  = "ON_DEMAND"
     }
   }
 
