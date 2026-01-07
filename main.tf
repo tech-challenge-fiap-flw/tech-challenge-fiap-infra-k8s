@@ -99,3 +99,21 @@ module "eks" {
     Name        = "tc-fiap-${var.environment}"
   }
 }
+
+# Adding Elastic IP association to the EKS managed node group instances
+resource "aws_eip" "eks_node_group" {
+  count    = length(module.eks.eks_managed_node_groups["default"].instances)
+  instance = module.eks.eks_managed_node_groups["default"].instances[count.index].id
+  vpc      = true
+}
+
+# Adding a security group rule to allow inbound traffic on port 3000
+resource "aws_security_group_rule" "allow_http_3000" {
+  type        = "ingress"
+  from_port   = 3000
+  to_port     = 3000
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = aws_security_group.eks_cluster_sg.id
+}
