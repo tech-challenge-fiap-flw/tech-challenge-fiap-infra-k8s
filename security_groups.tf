@@ -10,7 +10,7 @@ resource "aws_security_group" "eks_cluster_sg" {
     from_port       = 443
     to_port         = 443
     protocol        = "tcp"
-    security_groups = [aws_security_group.eks_cluster_sg.id]
+    # security_groups = [aws_security_group.node_group_sg.id]
   }
 
   ingress {
