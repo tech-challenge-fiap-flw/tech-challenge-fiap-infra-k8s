@@ -98,7 +98,7 @@ resource "aws_iam_role_policy_attachment" "eks_admin_attach" {
 # --- EKS Cluster ---
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.0"
+  version = "~> 21.0" # Atualizado para uma versão mais recente
 
   cluster_name    = "tc-fiap-${var.environment}"
   cluster_version = "1.30"
