@@ -150,8 +150,9 @@ resource "aws_lb_target_group" "eks_lb_target_group" {
   }
 }
 
+# Fetch Auto Scaling Group names for the EKS managed node group
 resource "aws_lb_target_group_attachment" "eks_lb_target_group_attachment" {
-  for_each = toset(module.eks.eks_managed_node_groups["default"].resources.autoscaling_groups)
+  for_each = toset(module.eks.node_groups["default"].resources.auto_scaling_group_names)
 
   target_group_arn = aws_lb_target_group.eks_lb_target_group.arn
   target_id        = each.value
