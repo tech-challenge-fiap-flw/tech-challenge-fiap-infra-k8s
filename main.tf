@@ -1,7 +1,7 @@
 # --- Provider e Backend ---
 terraform {
   required_version = ">= 1.3.0"
-  
+
   backend "s3" {
     bucket         = "tech-challenge-fiap-terraform-state"
     key            = "tech-challenge-fiap-infra-k8s/terraform.tfstate"
@@ -14,6 +14,10 @@ terraform {
     aws = {
       source  = "hashicorp/aws"
       version = ">= 5.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.23"
     }
   }
 }
@@ -127,12 +131,12 @@ module "eks" {
   # Regras adicionais de SG para os Nodes aceitarem tráfego do ALB
   node_security_group_additional_rules = {
     ingress_allow_alb = {
-      description                   = "Permitir trafego do ALB na porta 3000"
-      protocol                      = "tcp"
-      from_port                     = 3000
-      to_port                       = 3000
-      type                          = "ingress"
-      source_security_group_id      = aws_security_group.alb_sg.id
+      description              = "Permitir trafego do ALB na porta 3000"
+      protocol                 = "tcp"
+      from_port                = 3000
+      to_port                  = 3000
+      type                     = "ingress"
+      source_security_group_id = aws_security_group.alb_sg.id
     }
   }
 
