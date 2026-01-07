@@ -52,7 +52,7 @@ module "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.0"
+  version = "~> 20.13.0"
 
   cluster_name    = "tc-fiap-${var.environment}"
   cluster_version = "1.30"
