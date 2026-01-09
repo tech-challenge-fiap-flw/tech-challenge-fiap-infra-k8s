@@ -20,7 +20,7 @@ resource "aws_iam_role_policy_attachment" "eks_admin_attach" {
 terraform {
   backend "s3" {
     bucket         = "tech-challenge-fiap-terraform-state"
-    key            = "tech-challenge-fiap-infra-k8s/terraform-${var.environment}.tfstate"
+    key            = "tech-challenge-fiap-infra-k8s/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "tech-challenge-fiap-terraform-locks"
     encrypt        = true
