@@ -28,5 +28,19 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Set Environment Variables
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "production" ]]; then
+            echo "TF_WORKSPACE_NAME=production" >> $GITHUB_ENV
+            echo "TF_VAR_environment=production" >> $GITHUB_ENV
+          else
+            echo "TF_WORKSPACE_NAME=staging" >> $GITHUB_ENV
+            echo "TF_VAR_environment=staging" >> $GITHUB_ENV
+          fi
+
+      - name: Select or Create Workspace
+        run: |
+          terraform workspace select "$TF_WORKSPACE_NAME" || terraform workspace new "$TF_WORKSPACE_NAME"
+
       - name: Terraform Destroy
         run: terraform destroy -auto-approve -var="environment=${{ github.event.inputs.environment }}"
