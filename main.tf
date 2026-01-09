@@ -1,5 +1,5 @@
 resource "aws_iam_role" "eks_admin" {
-  name = "eks-admin-role"
+  name = "eks-admin-role-${var.environment}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
