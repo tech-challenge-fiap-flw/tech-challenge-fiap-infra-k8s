@@ -17,6 +17,7 @@ resource "aws_iam_role_policy_attachment" "eks_admin_attach" {
   role       = aws_iam_role.eks_admin.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
+
 terraform {
   backend "s3" {
     bucket         = "tech-challenge-fiap-terraform-state"
