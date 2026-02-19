@@ -20,7 +20,7 @@ resource "aws_iam_role_policy_attachment" "eks_admin_attach" {
 
 terraform {
   backend "s3" {
-    bucket       = "tech-challenge-fiap-terraform-state"
+    bucket       = "tech-challenge-fiap-tf-state"
     key          = "tech-challenge-fiap-infra-k8s/terraform.tfstate"
     region       = "us-east-1"
     use_lockfile = true
