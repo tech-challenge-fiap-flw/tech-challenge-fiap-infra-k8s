@@ -84,12 +84,16 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      min_size     = 1
-      max_size     = 2
-      desired_size = 1
+      min_size     = 2
+      max_size     = 3
+      desired_size = 2
 
       instance_types = ["t3.medium"]
       capacity_type  = "ON_DEMAND"
+
+      iam_role_additional_policies = {
+        sqs_access = aws_iam_policy.sqs_access.arn
+      }
     }
   }
 
